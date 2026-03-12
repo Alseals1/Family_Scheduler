@@ -94,7 +94,7 @@
   - Create `src/lib/supabase.ts` — initialize the Supabase client using your env vars
   - ✅ Done when: `npm run dev` shows the Vite page with no console errors
 
-- [ ] **TASK-006** `[1hr]`
+- [x] **TASK-006** `[1hr]`
       **Create project folder structure**
 
   ```
