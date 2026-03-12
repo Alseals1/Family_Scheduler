@@ -263,14 +263,14 @@
 
 ### 1.4 — Authentication
 
-- [ ] **TASK-009** `[BLOCKER]` `[2hr]`
+- [x] **TASK-009** `[BLOCKER]` `[2hr]`
       **Build login and signup pages**
   - Create `src/pages/Login.tsx` and `src/pages/Signup.tsx`
   - Use `supabase.auth.signInWithPassword()` and `supabase.auth.signUp()`
   - Protected route wrapper: redirect to `/login` if no active session
   - ✅ Done when: You can create an account with email/password and log back in
 
-- [ ] **TASK-010** `[1hr]`
+- [x] **TASK-010** `[1hr]`
       **Auto-create a family record on signup**
   - After `signUp()` succeeds, immediately insert:
     ```ts

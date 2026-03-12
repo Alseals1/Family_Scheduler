@@ -31,13 +31,22 @@ export default function SignupPage() {
 
     setLoading(true)
 
-    const { error: authError } = await supabase.auth.signUp({
+    const { data, error: authError } = await supabase.auth.signUp({
       email: form.email,
       password: form.password,
       options: {
         data: { full_name: form.fullName },
       },
     })
+
+    if (!authError && data.session && data.user) {
+      // Email confirmation is disabled — session is live immediately.
+      // Insert the family record now. If email confirmation is enabled,
+      // the DB trigger (handle_new_user_family) handles this instead.
+      await supabase
+        .from("families")
+        .insert({ name: "My Family", created_by: data.user.id })
+    }
 
     setLoading(false)
 
