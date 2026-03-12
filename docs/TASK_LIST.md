@@ -115,7 +115,7 @@
 
 > **Why first?** Your schema is the foundation everything else builds on. Getting it wrong early is the most expensive mistake you can make.
 
-- [ ] **TASK-007** `[BLOCKER]` `[2hr]`
+- [x] **TASK-007** `[BLOCKER]` `[2hr]`
       **Create core database tables in Supabase SQL Editor**
 
   ```sql
@@ -200,7 +200,7 @@
 
   - ✅ Done when: All 7 tables exist in Supabase with no SQL errors
 
-- [ ] **TASK-008** `[BLOCKER]` `[1hr]`
+- [x] **TASK-008** `[BLOCKER]` `[1hr]`
       **Enable Row-Level Security (RLS)**
 
   > Why: Without RLS, any authenticated user can read any other family's data. This is your security boundary.
