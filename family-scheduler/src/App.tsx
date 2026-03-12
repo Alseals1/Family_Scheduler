@@ -1,34 +1,84 @@
-import { useState } from "react"
-import reactLogo from "./assets/react.svg"
-import viteLogo from "/vite.svg"
-import "./App.css"
+import { useEffect, useState } from "react"
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
+import type { Session } from "@supabase/supabase-js"
+import { supabase } from "./lib/supabase"
+import LoginPage from "./pages/LoginPage"
+import SignupPage from "./pages/SignupPage"
 
-function App() {
-  const [count, setCount] = useState(0)
+function ProtectedRoute({
+  session,
+  children,
+}: {
+  session: Session | null
+  children: React.ReactNode
+}) {
+  if (!session) return <Navigate to="/login" replace />
+  return <>{children}</>
+}
+
+function Dashboard({ session }: { session: Session }) {
+  async function handleSignOut() {
+    await supabase.auth.signOut()
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
+    <div style={{ padding: "2rem", color: "#e2e8f0" }}>
+      <h1>
+        Welcome, {session.user.user_metadata?.full_name ?? session.user.email}!
+      </h1>
+      <p style={{ color: "#94a3b8" }}>
+        Your family scheduler dashboard is coming soon.
       </p>
-    </>
+      <button onClick={handleSignOut} style={{ marginTop: "1rem" }}>
+        Sign Out
+      </button>
+    </div>
+  )
+}
+
+function App() {
+  const [session, setSession] = useState<Session | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session)
+      setLoading(false)
+    })
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session)
+    })
+
+    return () => subscription.unsubscribe()
+  }, [])
+
+  if (loading) return null
+
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route
+          path="/login"
+          element={session ? <Navigate to="/" replace /> : <LoginPage />}
+        />
+        <Route
+          path="/signup"
+          element={session ? <Navigate to="/" replace /> : <SignupPage />}
+        />
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute session={session}>
+              <Dashboard session={session!} />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </BrowserRouter>
   )
 }
 
