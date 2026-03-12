@@ -115,7 +115,9 @@ family_ai_scheduler/
 ### Prerequisites
 
 - Node.js 18+
-- A free [Supabase](https://supabase.com) project
+- [Supabase CLI](https://supabase.com/docs/guides/cli/getting-started) (`brew install supabase/tap/supabase`)
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) (required for local Supabase)
+- A free [Supabase](https://supabase.com) project (for production)
 - A free [OpenRouter](https://openrouter.ai) API key
 - A [Google Cloud](https://console.cloud.google.com) project with Google Calendar API enabled
 
@@ -133,7 +135,13 @@ npm install
 cp .env.example .env.local
 # Fill in your Supabase URL, anon key, and OpenRouter API key
 
-# 4. Start the dev server
+# 4. Start local Supabase (requires Docker)
+supabase start
+
+# 5. Apply database migrations
+supabase migration up
+
+# 6. Start the dev server
 npm run dev
 ```
 
@@ -146,6 +154,26 @@ VITE_SUPABASE_URL=https://your-project.supabase.co
 VITE_SUPABASE_ANON_KEY=your-anon-key
 VITE_OPENROUTER_KEY=your-openrouter-key
 ```
+
+### Database Migrations
+
+Migrations live in `family-scheduler/supabase/migrations/` and are managed with the Supabase CLI.
+
+```bash
+# Apply all pending migrations to local DB
+supabase migration up
+
+# Create a new migration file
+supabase migration new <migration_name>
+
+# Push migrations to your remote Supabase project
+supabase db push
+
+# Reset local DB and re-apply all migrations from scratch
+supabase db reset
+```
+
+> Local Supabase Studio runs at **http://localhost:54323** after `supabase start`.
 
 ---
 
