@@ -65,14 +65,14 @@
   - Recommended free model: `google/gemini-flash-1.5`
   - ✅ Done when: You have an API key stored safely
 
-- [ ] **TASK-003** `[30min]`
+- [x] **TASK-003** `[30min]`
       **Create GitHub repo**
   - New repo: `family-ai-scheduler`
   - Initialize with README and `.gitignore` (Node)
   - Add `.env.local` to `.gitignore` immediately
   - ✅ Done when: Repo is live and `.env.local` is gitignored
 
-- [ ] **TASK-004** `[30min]`
+- [x] **TASK-004** `[30min]`
       **Register Google Cloud project (free)**
   - Go to console.cloud.google.com → create a project
   - Enable the **Google Calendar API**
@@ -96,6 +96,7 @@
 
 - [ ] **TASK-006** `[1hr]`
       **Create project folder structure**
+
   ```
   src/
     components/   ← reusable UI pieces
