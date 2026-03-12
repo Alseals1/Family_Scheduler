@@ -82,7 +82,7 @@
 
 ### 1.2 — React App Scaffold
 
-- [ ] **TASK-005** `[BLOCKER]` `[1hr]`
+- [x] **TASK-005** `[BLOCKER]` `[1hr]`
       **Bootstrap the React app with Vite**
 
   ```bash
