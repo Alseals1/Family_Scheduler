@@ -290,7 +290,7 @@
 
 ### 2.1 — Google OAuth Setup
 
-- [ ] **TASK-011** `[BLOCKER]` `[1hr]`
+- [x] **TASK-011** `[BLOCKER]` `[1hr]`
       **Configure Google OAuth in Supabase**
   - In Google Cloud Console → APIs & Services → Credentials → Create OAuth 2.0 Client ID
   - Application type: Web application

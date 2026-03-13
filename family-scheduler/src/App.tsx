@@ -4,6 +4,8 @@ import type { Session } from "@supabase/supabase-js"
 import { supabase } from "./lib/supabase"
 import LoginPage from "./pages/LoginPage"
 import SignupPage from "./pages/SignupPage"
+import CalendarsPage from "./pages/CalendarsPage"
+import ConnectCalendar from "./components/ConnectCalendar"
 
 function ProtectedRoute({
   session,
@@ -29,7 +31,13 @@ function Dashboard({ session }: { session: Session }) {
       <p style={{ color: "#94a3b8" }}>
         Your family scheduler dashboard is coming soon.
       </p>
-      <button onClick={handleSignOut} style={{ marginTop: "1rem" }}>
+      <div style={{ marginTop: "1.5rem" }}>
+        <ConnectCalendar />
+      </div>
+      <button
+        onClick={handleSignOut}
+        style={{ marginTop: "1rem", display: "block" }}
+      >
         Sign Out
       </button>
     </div>
@@ -76,6 +84,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route path="/calendars" element={<CalendarsPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
