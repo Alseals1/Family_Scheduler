@@ -298,7 +298,7 @@
   - In Supabase dashboard → Authentication → Providers → Google → paste Client ID + Secret
   - ✅ Done when: Google is listed as an enabled provider in Supabase Auth
 
-- [ ] **TASK-012** `[BLOCKER]` `[2hr]`
+- [x] **TASK-012** `[BLOCKER]` `[2hr]`
       **Build the "Connect Google Calendar" button**
   - Create `src/components/ConnectCalendar.tsx`
   - Trigger OAuth with calendar read scope:
