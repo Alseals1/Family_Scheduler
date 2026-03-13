@@ -1,0 +1,65 @@
+name: CI
+
+# Runs on every push and pull request to dev (staging) and main (production).
+# The build step uses the committed .env file which always points to production Supabase.
+# .env.local does NOT exist in CI, so no accidental local credentials leak in.
+
+on:
+    push:
+        branches: [dev, main]
+    pull_request:
+        branches: [dev, main]
+
+jobs:
+    build:
+        name: Lint & Build
+        runs-on: ubuntu-latest
+
+        defaults:
+            run:
+                working-directory: family-scheduler
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Set up Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+                  cache: npm
+                  cache-dependency-path: family-scheduler/package-lock.json
+
+            - name: Install dependencies
+              run: npm ci
+
+            - name: Lint
+              run: npm run lint
+
+            - name: Build
+              run: npm run build
+              # The build reads VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY from the
+              # committed .env file (pointing to production). No secrets needed here
+              # because those values are already in the repo.
+              #
+              # TODO (Vercel deploy): When you connect this repo to Vercel, delete the
+              # build step above and replace it with Vercel's GitHub integration instead.
+              # Vercel will run its own build using env vars you set in the Vercel dashboard.
+              # You can optionally keep this job for lint-only checks.
+
+    # --------------------------------------------------------------------------
+    # FUTURE: production deploy gate (main branch only)
+    # Uncomment and configure when Vercel is set up.
+    # --------------------------------------------------------------------------
+    # deploy-production:
+    #   name: Deploy to Production (Vercel)
+    #   needs: build
+    #   if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    #   runs-on: ubuntu-latest
+    #   steps:
+    #     - uses: actions/checkout@v4
+    #     - name: Deploy to Vercel
+    #       run: npx vercel --prod --token=${{ secrets.VERCEL_TOKEN }}
+    #       env:
+    #         VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+    #         VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}

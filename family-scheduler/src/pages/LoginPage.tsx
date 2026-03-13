@@ -1,30 +1,31 @@
-import { useState, FormEvent } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { supabase } from "../lib/supabase";
-import type { LoginFormData } from "../types/auth";
+import { useState } from "react"
+import type { FormEvent } from "react"
+import { Link, useNavigate } from "react-router-dom"
+import { supabase } from "../lib/supabase"
+import type { LoginFormData } from "../types/auth"
 
 export default function LoginPage() {
-  const navigate = useNavigate();
-  const [form, setForm] = useState<LoginFormData>({ email: "", password: "" });
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate()
+  const [form, setForm] = useState<LoginFormData>({ email: "", password: "" })
+  const [error, setError] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
 
   async function handleSubmit(e: FormEvent) {
-    e.preventDefault();
-    setError(null);
-    setLoading(true);
+    e.preventDefault()
+    setError(null)
+    setLoading(true)
 
     const { error: authError } = await supabase.auth.signInWithPassword({
       email: form.email,
       password: form.password,
-    });
+    })
 
-    setLoading(false);
+    setLoading(false)
 
     if (authError) {
-      setError(authError.message);
+      setError(authError.message)
     } else {
-      navigate("/");
+      navigate("/")
     }
   }
 
@@ -84,7 +85,7 @@ export default function LoginPage() {
         </p>
       </div>
     </div>
-  );
+  )
 }
 
 const styles: Record<string, React.CSSProperties> = {
@@ -94,7 +95,8 @@ const styles: Record<string, React.CSSProperties> = {
     alignItems: "center",
     justifyContent: "center",
     padding: "1rem",
-    background: "linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)",
+    background:
+      "linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)",
   },
   card: {
     width: "100%",
@@ -176,4 +178,4 @@ const styles: Record<string, React.CSSProperties> = {
     color: "#818cf8",
     fontWeight: 500,
   },
-};
+}
