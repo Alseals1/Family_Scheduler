@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import type { Session } from "@supabase/supabase-js"
 import { useNavigate } from "react-router-dom"
 import { supabase } from "../lib/supabase"
@@ -10,16 +10,37 @@ export default function CalendarsPage() {
   const navigate = useNavigate()
   const [status, setStatus] = useState<Status>("idle")
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
+  const hasProcessedToken = useRef(false)
 
   useEffect(() => {
-    // onAuthStateChange fires with SIGNED_IN immediately after Google redirects
-    // back to this page. The session at that point contains provider_token
-    // (Google access token) and provider_refresh_token.
+    // After OAuth redirect, Supabase fires INITIAL_SESSION (not SIGNED_IN) with provider tokens.
+    // We only want to save once, so we use a ref to track if we've processed the tokens.
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === "SIGNED_IN" && session?.provider_token) {
+      console.log("[CalendarsPage] Auth event:", event, {
+        hasSession: !!session,
+        hasProviderToken: !!session?.provider_token,
+        providerToken: session?.provider_token ? "***" : "MISSING",
+        refreshToken: session?.provider_refresh_token ? "***" : "MISSING",
+      })
+
+      // After OAuth redirect, fire with INITIAL_SESSION and provider tokens
+      if (
+        (event === "SIGNED_IN" || event === "INITIAL_SESSION") &&
+        session?.provider_token &&
+        !hasProcessedToken.current
+      ) {
+        hasProcessedToken.current = true
         await saveCalendarConnection(session)
+      } else if (
+        (event === "SIGNED_IN" || event === "INITIAL_SESSION") &&
+        !session?.provider_token
+      ) {
+        setErrorMsg(
+          "OAuth succeeded but Google tokens were not captured. Check your Authorized Redirect URIs in Google Cloud Console.",
+        )
+        setStatus("error")
       }
     })
 
@@ -89,7 +110,7 @@ export default function CalendarsPage() {
       const tokenExpiresAt = new Date(Date.now() + 3600 * 1000).toISOString()
 
       if (existingConn) {
-        await supabase
+        const { error: updateErr } = await supabase
           .from("calendar_connections")
           .update({
             access_token: session.provider_token,
@@ -97,15 +118,23 @@ export default function CalendarsPage() {
             token_expires_at: tokenExpiresAt,
           })
           .eq("id", existingConn.id)
+
+        if (updateErr)
+          throw new Error(`Failed to update tokens: ${updateErr.message}`)
       } else {
-        await supabase.from("calendar_connections").insert({
-          family_member_id: memberId,
-          provider: "google",
-          calendar_name: "Google Calendar",
-          access_token: session.provider_token,
-          refresh_token: session.provider_refresh_token ?? null,
-          token_expires_at: tokenExpiresAt,
-        })
+        const { error: insertErr } = await supabase
+          .from("calendar_connections")
+          .insert({
+            family_member_id: memberId,
+            provider: "google",
+            calendar_name: "Google Calendar",
+            access_token: session.provider_token,
+            refresh_token: session.provider_refresh_token ?? null,
+            token_expires_at: tokenExpiresAt,
+          })
+
+        if (insertErr)
+          throw new Error(`Failed to save tokens: ${insertErr.message}`)
       }
 
       setStatus("saved")
