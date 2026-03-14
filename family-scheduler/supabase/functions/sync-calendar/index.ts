@@ -92,7 +92,10 @@ Deno.serve(async (req: Request) => {
 
     if (!family_member_id) {
       return new Response(
-        JSON.stringify({ error: "family_member_id is required", message: "family_member_id is required" }),
+        JSON.stringify({
+          error: "family_member_id is required",
+          message: "family_member_id is required",
+        }),
         {
           status: 400,
           headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
@@ -118,7 +121,8 @@ Deno.serve(async (req: Request) => {
       return new Response(
         JSON.stringify({
           error: "No Google calendar connections found for this family member",
-          message: "No Google calendar connections found for this family member",
+          message:
+            "No Google calendar connections found for this family member",
         }),
         {
           status: 404,
@@ -198,12 +202,9 @@ Deno.serve(async (req: Request) => {
   } catch (err) {
     console.error("[sync-calendar]", err)
     const errMsg = err instanceof Error ? err.message : "Unexpected error"
-    return new Response(
-      JSON.stringify({ error: errMsg, message: errMsg }),
-      {
-        status: 500,
-        headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
-      },
-    )
+    return new Response(JSON.stringify({ error: errMsg, message: errMsg }), {
+      status: 500,
+      headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
+    })
   }
 })
