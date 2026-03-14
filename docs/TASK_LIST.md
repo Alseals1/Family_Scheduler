@@ -318,7 +318,7 @@
 
 ### 2.2 — Event Sync
 
-- [ ] **TASK-013** `[BLOCKER]` `[3hr]`
+- [x] **TASK-013** `[BLOCKER]` `[3hr]`
       **Create Supabase Edge Function: `sync-calendar`**
   - `supabase/functions/sync-calendar/index.ts`
   - Logic:
@@ -329,7 +329,7 @@
     5. Upsert each event into `events` table (the `unique` constraint prevents duplicates)
   - ✅ Done when: Calling the function causes real calendar events to appear in your `events` table
 
-- [ ] **TASK-014** `[2hr]`
+- [x] **TASK-014** `[2hr]`
       **Add "Sync Now" button to the UI**
   - On click: `supabase.functions.invoke('sync-calendar', { body: { family_member_id } })`
   - Show a loading spinner while it runs
